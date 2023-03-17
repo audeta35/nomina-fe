@@ -30,6 +30,7 @@ import {
   animals,
 } from 'unique-names-generator';
 import { Troubleshoot } from '@mui/icons-material';
+import { Toast } from '@/component/alert';
 
 const Hobby = () => {
   const [hobby, setHobby] = useState([]);
@@ -107,7 +108,7 @@ const Hobby = () => {
     const onDelete = (id) => {
       axios
         .delete(
-          `${process.env.API_HOST}/hobt/delete/${id}`
+          `${process.env.API_HOST}/hobby/delete/${id}`
         )
         .then((res) => {
           Toast.fire({
