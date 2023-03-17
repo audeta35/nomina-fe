@@ -32,6 +32,7 @@ import {
   animals,
 } from 'unique-names-generator';
 import { Troubleshoot } from '@mui/icons-material';
+import { Toast } from '@/component/alert';
 
 const User = () => {
   const [hobby, setHobby] = useState([]);
@@ -139,6 +140,19 @@ const User = () => {
     });
   };
 
+  const onDelete = (id) => {
+    axios.delete(`${process.env.API_HOST}/user/delete/${id}`).then(res => {
+      Toast.fire({
+        icon: 'success',
+        title: 'Hapus Berhasil',
+      });
+    }).catch(err => {
+      console.log(err)
+    }).finally(() => {
+        getUsers();
+    })
+  }
+
   return (
     <>
       <Container maxWidth='md'>
@@ -199,7 +213,7 @@ const User = () => {
                       >
                         edit
                       </Button>
-                      <Button>delete</Button>
+                      <Button onClick={() => onDelete(row.id)}>delete</Button>
                     </TableCell>
                   </TableRow>
                 ))}

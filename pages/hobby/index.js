@@ -104,6 +104,25 @@ const Hobby = () => {
     });
   };
 
+    const onDelete = (id) => {
+      axios
+        .delete(
+          `${process.env.API_HOST}/hobt/delete/${id}`
+        )
+        .then((res) => {
+          Toast.fire({
+            icon: 'success',
+            title: 'Hapus Berhasil',
+          });
+        })
+        .catch((err) => {
+          console.log(err);
+        })
+        .finally(() => {
+          getHobby();
+        });
+    };
+
   return (
     <>
       <Container maxWidth='md'>
@@ -145,7 +164,11 @@ const Hobby = () => {
                       >
                         edit
                       </Button>
-                      <Button>delete</Button>
+                      <Button
+                        onClick={() => onDelete(row.id)}
+                      >
+                        delete
+                      </Button>
                     </TableCell>
                   </TableRow>
                 ))}
@@ -156,8 +179,8 @@ const Hobby = () => {
           variant='contained'
           className='my-2'
           onClick={() => {
-              setModalAdd(!modalAdd)
-              setIsEdit(false)
+            setModalAdd(!modalAdd);
+            setIsEdit(false);
           }}
         >
           Add
@@ -167,12 +190,12 @@ const Hobby = () => {
       <Dialog
         open={modalAdd}
         onClocse={() => {
-            setModalAdd(!modalAdd)
-            setIsEdit(false)
-            setPayload({
-                name: '',
-                status: 0
-            })
+          setModalAdd(!modalAdd);
+          setIsEdit(false);
+          setPayload({
+            name: '',
+            status: 0,
+          });
         }}
       >
         <DialogTitle>Hobby</DialogTitle>
@@ -226,12 +249,12 @@ const Hobby = () => {
         <DialogActions>
           <Button
             onClick={() => {
-                setModalAdd(!modalAdd)
-                setIsEdit(false)
-                setPayload({
-                    name: '',
-                    status: 0
-                })
+              setModalAdd(!modalAdd);
+              setIsEdit(false);
+              setPayload({
+                name: '',
+                status: 0,
+              });
             }}
           >
             Close
