@@ -23,7 +23,6 @@ import { useRouter } from 'next/router';
 import { Toast } from '../../component/alert';
 
 const Register = () => {
-
   const router = useRouter();
   const [payload, setPayload] = useState({
     firstName: '',
@@ -65,35 +64,46 @@ const Register = () => {
   };
 
   const onSubmit = () => {
-    axios
-      .post(process.env.API_HOST + '/user/add', {
-        first_name: payload.firstName,
-        last_name: payload.lastName,
-        email: payload.email,
-        age: payload.age,
-        password: payload.password,
-        hobby: 0,
-      })
-      .then((res) => {
-        // console.log('res', res.data.status.code);
-        if(res.data.status.code) {
+    if (
+      payload.password === payload.confirmPassword
+    ) {
+      axios
+        .post(
+          process.env.API_HOST + '/user/add',
+          {
+            first_name: payload.firstName,
+            last_name: payload.lastName,
+            email: payload.email,
+            age: payload.age,
+            password: payload.password,
+            hobby: 0,
+          }
+        )
+        .then((res) => {
+          // console.log('res', res.data.status.code);
+          if (res.data.status.code) {
             Toast.fire({
               icon: 'success',
               title: 'Berhasil Register',
             });
 
-            router.replace('/login')
-        } else {
+            router.replace('/login');
+          } else {
             Toast.fire({
               icon: 'error',
               title: 'Register gagal',
             });
-
-        }
+          }
+        })
+        .catch((err) => {
+          // console.log('err', err);
+        });
+    } else {
+      Toast.fire({
+        icon: 'error',
+        title: 'Password tidak sesuai'
       })
-      .catch((err) => {
-        // console.log('err', err);
-      });
+    }
   };
 
   return (

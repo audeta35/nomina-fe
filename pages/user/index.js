@@ -41,11 +41,12 @@ const User = () => {
   const [showPass, setShowPass] = useState(false);
   const [isEdit, setIsEdit] = useState(false);
   const [payload, setPayload] = useState({
-    first_name: '',
-    last_name: '',
+    firstName: '',
+    lastName: '',
     email: '',
     age: 0,
     password: '',
+    confirmPassword: '',
   });
 
   useEffect(() => {
@@ -86,37 +87,49 @@ const User = () => {
 
   const onEdit = (row) => {
     setIsEdit(true);
-    setPayload(row);
+    setPayload({
+      ...row,
+      confirmPassword: row.password
+    });
     setModalAdd(true);
   };
 
   const onSubmit = () => {
     let endpoint = isEdit ? 'edit' : 'add';
-    axios
-      .post(
-        `${process.env.API_HOST}/user/${endpoint}`,
-        payload
-      )
-      .then((res) => {
-        // console.log('res', res.data);
-        Toast.fire({
-          icon: 'success',
-          title: 'Berhasil',
+    if (
+      payload.password === payload.confirmPassword
+    ) {
+      axios
+        .post(
+          `${process.env.API_HOST}/user/${endpoint}`,
+          payload
+        )
+        .then((res) => {
+          // console.log('res', res.data);
+          Toast.fire({
+            icon: 'success',
+            title: 'Berhasil',
+          });
+        })
+        .catch((err) => {
+          // console.log(err);
+        })
+        .finally(() => {
+          getUsers();
+          setPayload({
+            name: '',
+            status: 0,
+          });
+          // console.log('endpoint', endpoint);
+          setModalAdd(!modalAdd);
+          setIsEdit(false);
         });
-      })
-      .catch((err) => {
-        // console.log(err);
-      })
-      .finally(() => {
-        getUsers();
-        setPayload({
-          name: '',
-          status: 0,
-        });
-        // console.log('endpoint', endpoint);
-        setModalAdd(!modalAdd);
-        setIsEdit(false);
+    } else {
+      Toast.fire({
+        icon: 'error',
+        title: 'Password tidak sesuai',
       });
+    }
   };
 
   const generateUser = () => {
@@ -213,7 +226,13 @@ const User = () => {
                       >
                         edit
                       </Button>
-                      <Button onClick={() => onDelete(row.id)}>delete</Button>
+                      <Button
+                        onClick={() =>
+                          onDelete(row.id)
+                        }
+                      >
+                        delete
+                      </Button>
                     </TableCell>
                   </TableRow>
                 ))}
@@ -233,13 +252,14 @@ const User = () => {
         open={modalAdd}
         onClocse={() => {
           setModalAdd(!modalAdd);
-          setIsEdit(false)
+          setIsEdit(false);
           setPayload({
-            first_name: '',
-            last_name: '',
+            firstName: '',
+            lastName: '',
             email: '',
             age: 0,
             password: '',
+            confirmPassword: '',
           });
         }}
       >
@@ -372,19 +392,57 @@ const User = () => {
                 </Select>
               </FormControl>
             </Grid>
+
+            <Grid
+              item
+              md={12}
+            >
+              <TextField
+                label='password'
+                value={payload.password}
+                className='my-3'
+                placeholder='password'
+                type={
+                  showPass ? 'text' : 'password'
+                }
+                variant='outlined'
+                fullWidth
+                required
+                onChange={(e) =>
+                  onChange(e, 'password')
+                }
+              />
+
+              <TextField
+                label='confirm password'
+                value={payload.confirmPassword}
+                className='my-3'
+                placeholder='confirm password'
+                type={
+                  showPass ? 'text' : 'password'
+                }
+                variant='outlined'
+                fullWidth
+                required
+                onChange={(e) =>
+                  onChange(e, 'confirmPassword')
+                }
+              />
+            </Grid>
           </Grid>
         </DialogContent>
         <DialogActions>
           <Button
             onClick={() => {
               setModalAdd(!modalAdd);
-              setIsEdit(false)
+              setIsEdit(false);
               setPayload({
-                first_name: '',
-                last_name: '',
+                firstName: '',
+                lastName: '',
                 email: '',
                 age: 0,
                 password: '',
+                confirmPassword: '',
               });
             }}
           >
